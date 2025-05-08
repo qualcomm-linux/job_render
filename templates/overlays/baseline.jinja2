@@ -1,0 +1,14 @@
+{% extends boot_template %}
+
+{%- block testoverlays -%}
+modules:
+  compression: xz
+  url: '{{ node.artifacts.modules }}'
+  format: tar
+  path : /
+kselftest:
+  compression: gz
+  format: tar
+  path: /kselftest
+  url: {{ node.artifacts.kselftest_tar_gz }}
+{%- endblock -%}

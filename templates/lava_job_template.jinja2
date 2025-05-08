@@ -1,0 +1,31 @@
+actions:
+{% set boot_template = 'boot/' + platform_config.boot_method + '.jinja2' %}
+{% set boot_overlay_template = 'overlays/' + test_method + '.jinja2' %}
+{% include boot_overlay_template %}
+{% if tests_count %}
+- test:
+    timeout:
+      minutes: 5
+    definitions:
+    {% for test in node.tests %}
+    - repository: "{{test.repository}}"
+      from: "{{test.from}}"
+      path: automated/linux{{test.path}}
+      name: "{{test.name}}"
+    {% endfor %}
+{% endif %}
+device_type: {{ platform_config.name }}
+job_name: "[{{ instanceid|default('AKS')}}] {{ node.id }} {{ node.name }} {{ node.data.kernel_revision.describe }}"
+priority: 20
+timeouts:
+  action:
+    minutes: 10
+  actions:
+    power-off:
+      seconds: 30
+  job:
+    minutes: 30
+  queue:
+    days: 2
+visibility: public
+

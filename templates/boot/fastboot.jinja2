@@ -1,0 +1,43 @@
+- deploy:
+    images:
+      image:
+        url: '{{ node.artifacts.kernel }}'
+      dtb:
+        url: '{{ node.artifacts.dtb }}'
+      ramdisk:
+        url: 'http://storage.kernelci.org/images/rootfs/buildroot/buildroot-baseline/20230703.0/{{ brarch }}/rootfs.cpio.gz'
+        compression: gz
+        format: cpio.newc
+        overlays:
+          lava: true
+{% filter indent(width=10) %}
+{% block testoverlays %}{% endblock %}
+{% endfilter %}
+{% set dtb = device_dtb.split('/')[-1] %}
+    postprocess:
+      docker:
+        image: ghcr.io/mwasilew/docker-mkbootimage:master
+        steps:
+        - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk rootfs.cpio.gz --output boot.img
+    to: downloads
+
+- deploy:
+    images:
+      boot:
+        url: 'downloads://boot.img'
+    timeout:
+      minutes: 2
+    to: download
+
+- boot:
+    prompts:
+    - '/ #'
+    failure_retry: 3
+    timeout:
+      minutes: 10
+    timeouts:
+      bootloader-commands:
+        minutes: 3
+      auto-login-action:
+        minutes: 10
+    method: fastboot

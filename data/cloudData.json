@@ -1,0 +1,84 @@
+{
+    "id": "67bb89e1e3e60eeff6099cd6",
+    "kind": "kbuild",
+    "name": "kbuild-gcc-12-arm64",
+    "path": [
+      "checkout",
+      "kbuild-gcc-12-arm64"
+    ],
+    "group": "kbuild-gcc-12-arm64",
+    "parent": "67bb8962e3e60eeff6099c81",
+    "state": "done",
+    "result": "pass",
+    "artifacts": {
+      "build_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_sh": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build.sh?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_kimage_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_kimage.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_kimage_stderr_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_kimage_stderr.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_modules_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_modules.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_modules_stderr_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_modules_stderr.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_kselftest_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_kselftest.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_kselftest_stderr_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_kselftest_stderr.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_dtbs_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_dtbs.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "build_dtbs_stderr_log": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/build_dtbs_stderr.log.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "metadata": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/metadata.json?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "fragments/0_config": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/fragments/0.config?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "fragments/1_config": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/fragments/1.config?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "fragments/2_config": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/fragments/2.config?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "_config": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/.config?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "kernel": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/Image?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "vmlinux": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/vmlinux.xz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "modules": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/modules.tar.xz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D",
+      "kselftest_tar_gz": "https://kciapistagingstorage1.file.core.windows.net/production/kbuild-gcc-12-arm64-67bb89e1e3e60eeff6099cd6/kselftest.tar.gz?sv=2022-11-02&ss=f&srt=sco&sp=r&se=2026-10-18T13:36:18Z&st=2024-10-17T05:36:18Z&spr=https&sig=xFxYOOh5uXJWeN9I3YKAUvpGGQivo89HKZbD78gcxvc%3D"
+    },
+    "data": {
+      "kernel_revision": {
+        "tree": "mainline",
+        "url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+        "branch": "master",
+        "commit": "d082ecbc71e9e0bf49883ee4afd435a77a5101b6",
+        "describe": "v6.14-rc4",
+        "version": {
+          "version": 6,
+          "patchlevel": 14,
+          "sublevel": null,
+          "extra": "-rc4",
+          "name": null
+        },
+        "patchset": null,
+        "commit_tags": [
+          "v6.14-rc4"
+        ],
+        "commit_message": "Linux 6.14-rc4",
+        "tip_of_branch": true
+      },
+      "arch": "arm64",
+      "defconfig": "defconfig",
+      "compiler": "gcc-12",
+      "error_code": null,
+      "error_msg": null,
+      "fragments": [
+        "lab-setup",
+        "kselftest"
+      ],
+      "config_full": "defconfig+lab-setup+kselftest",
+      "platform": "kubernetes",
+      "runtime": "k8s-all",
+      "job_id": "kci-67bb89e1e3e60eeff6099cd6-kbuild-gcc-12-arm64-q2ku8gjy",
+      "job_context": "gke_android-kernelci-external_us-east4-c_kci-big-us-east4",
+      "kernel_type": "image",
+      "regression": null
+    },
+    "debug": {},
+    "jobfilter": null,
+    "platform_filter": [],
+    "created": "2025-02-23T20:49:37.894000",
+    "updated": "2025-02-23T21:54:02.506000",
+    "timeout": "2025-02-24T02:49:37.894000",
+    "holdoff": null,
+    "owner": "production",
+    "submitter": "service:pipeline",
+    "treeid": "a9333d0b6537440630a6eb4bb2aa093d4c191a0703c6792449f06702a1704a69",
+    "user_groups": [],
+    "processed_by_kcidb_bridge": true
+  }

@@ -1,0 +1,77 @@
+actions:
+- deploy:
+    images:
+      dtb:
+        url: https://files.kernelci.org/kbuild-gcc-12-arm64-67e61cea67593f2aa03acad5/dtbs/qcom/qcs6490-rb3gen2.dtb
+      image:
+        url: https://files.kernelci.org/kbuild-gcc-12-arm64-67e61cea67593f2aa03acad5/Image
+      ramdisk:
+        compression: gz
+        format: cpio.newc
+        overlays:
+          kselftest:
+            compression: gz
+            format: tar
+            path: /kselftest
+            url: https://files.kernelci.org/kbuild-gcc-12-arm64-67e61cea67593f2aa03acad5/kselftest.tar.gz
+          lava: true
+          modules:
+            compression: xz
+            format: tar
+            path: /
+            url: https://files.kernelci.org/kbuild-gcc-12-arm64-67e61cea67593f2aa03acad5/modules.tar.xz
+        url: http://storage.kernelci.org/images/rootfs/buildroot/buildroot-baseline/20230703.0/arm64/rootfs.cpio.gz
+    postprocess:
+      docker:
+        image: ghcr.io/mwasilew/docker-mkbootimage:master
+        steps:
+        - mkbootimg --header_version 2 --kernel Image --dtb qcs6490-rb3gen2.dtb --cmdline
+          "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4
+          mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk rootfs.cpio.gz
+          --output boot.img
+    to: downloads
+- deploy:
+    images:
+      boot:
+        url: downloads://boot.img
+    timeout:
+      minutes: 2
+    to: download
+- boot:
+    failure_retry: 3
+    method: fastboot
+    prompts:
+    - '/ #'
+    timeout:
+      minutes: 10
+    timeouts:
+      auto-login-action:
+        minutes: 10
+      bootloader-commands:
+        minutes: 3
+- test:
+    definitions:
+    - from: git
+      name: meminfo-tests
+      path: automated/linux/meminfo/meminfo.yaml
+      repository: https://github.qualcomm.com/ylal/test-definitions
+    - from: git
+      name: smoke-tests
+      path: automated/linux/smoke/smoke.yaml
+      repository: https://github.qualcomm.com/ylal/test-definitions
+    timeout:
+      minutes: 5
+device_type: qcs6490
+job_name: '[KernelCI AKS] 67e61cea67593f2aa03acad5 kbuild-gcc-12-arm64 net-next-6.15-5618-gacb4f33713b9f'
+priority: 20
+timeouts:
+  action:
+    minutes: 10
+  actions:
+    power-off:
+      seconds: 30
+  job:
+    minutes: 30
+  queue:
+    days: 2
+visibility: public

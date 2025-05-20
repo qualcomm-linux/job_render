@@ -1,3 +1,6 @@
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
 from urllib.parse import urlunparse, urlparse
 
 base_url = "https://kernelci-api.westus3.cloudapp.azure.com/latest/"

@@ -1,3 +1,6 @@
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
 import requests
 from utils.generate_url_with_optional_node_id import build_url
 from utils.filter_files import filter_data

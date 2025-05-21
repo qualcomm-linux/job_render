@@ -1,3 +1,6 @@
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
 #this is the file to generate job definition
 from data_validation.validate_data import Validator
 from Handlers.templateHandler import TemplateHandler

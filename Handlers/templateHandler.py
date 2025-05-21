@@ -1,3 +1,6 @@
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound, Template
 import yaml, requests
 import logging

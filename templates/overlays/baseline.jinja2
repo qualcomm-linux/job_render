@@ -11,4 +11,9 @@ kselftest:
   format: tar
   path: /kselftest
   url: {{ node.artifacts.kselftest_tar_gz }}
+firmware:
+  compression: gz
+  format: tar
+  path: /
+  url: {{ node.artifacts.firmware }}
 {%- endblock -%}

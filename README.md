@@ -32,5 +32,5 @@ export TARGET_DTB="qcs6490-rb3gen2"
 
 # License
 
-job_render is licensed under the [*BSD-3-clause License*](https://spdx.org/licenses/BSD-3-Clause.html). See [*LICENSE*](https://github.com/qualcomm-linux/job_render/blob/main/LICENSE) for the full license text.
+job_render is licensed under the [*BSD-3-clause-clear License*](https://spdx.org/licenses/BSD-3-Clause-Clear.html). See [*LICENSE*](https://github.com/qualcomm-linux/job_render/blob/main/LICENSE) for the full license text.
 

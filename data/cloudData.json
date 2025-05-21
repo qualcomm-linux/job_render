@@ -14,8 +14,10 @@
       "metadata": "",
       "kernel": "",
       "vmlinux": "",
-      "modules": "https://files.kernelci.org/kbuild-gcc-12-arm64-681a3b1cea9ae9de13450f99/modules.tar.xz",
-      "kselftest_tar_gz": "https://files.kernelci.org/kbuild-gcc-12-arm64-681a3b1cea9ae9de13450f99/kselftest.tar.gz"
+      "modules": "",
+      "kselftest_tar_gz": "",
+      "ramdisk": "",
+      "firmware": ""
     },
     "data": {
       "kernel_revision": {

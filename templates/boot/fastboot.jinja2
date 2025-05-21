@@ -5,7 +5,7 @@
       dtb:
         url: '{{ node.artifacts.dtb }}'
       ramdisk:
-        url: 'http://storage.kernelci.org/images/rootfs/buildroot/buildroot-baseline/20230703.0/{{ brarch }}/rootfs.cpio.gz'
+        url: '{{ node.artifacts.ramdisk }}'
         compression: gz
         format: cpio.newc
         overlays:

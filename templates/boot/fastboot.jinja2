@@ -4,8 +4,10 @@
         url: '{{ node.artifacts.kernel }}'
       dtb:
         url: '{{ node.artifacts.dtb }}'
-      ramdisk:
+      ramdisk_firmware:
         url: '{{ node.artifacts.ramdisk }}'
+      ramdisk:
+        url: '{{ node.artifacts.firmware }}'
         compression: gz
         format: cpio.newc
         overlays:
@@ -13,12 +15,13 @@
 {% filter indent(width=10) %}
 {% block testoverlays %}{% endblock %}
 {% endfilter %}
-{% set dtb = device_dtb.split('/')[-1] %}
+{% set dtb = device_dtb.split('/')[-1].split('?')[0] %}
     postprocess:
       docker:
         image: ghcr.io/mwasilew/docker-mkbootimage:master
         steps:
-        - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk rootfs.cpio.gz --output boot.img
+        - cat initramfs-kerneltest-full-image-qcom-armv8a.cpio.gz initramfs-firmware-rb3gen2-image-qcom-armv8a.cpio.gz > merged-initramfs.cpio.gz
+        - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk merged-initramfs.cpio.gz --output boot.img
     to: downloads
 
 - deploy:
@@ -31,7 +34,7 @@
 
 - boot:
     prompts:
-    - '/ #'
+    - '~#'
     failure_retry: 3
     timeout:
       minutes: 10

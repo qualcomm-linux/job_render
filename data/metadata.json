@@ -1,0 +1,17 @@
+{
+    "build": {
+        "arch": "arm64",
+        "compiler": "gcc-12",
+        "defconfig": "defconfig",
+        "fragments": [
+            "lab-setup",
+            "kselftest"
+        ],
+        "srcdir": "/tmp/kci/linux",
+        "config_full": "defconfig+lab-setup+kselftest",
+        "result": "pass"
+    },
+    "artifacts": {
+        "dtbs/qcom/qcs6490-rb3gen2.dtb": ""
+    }
+}

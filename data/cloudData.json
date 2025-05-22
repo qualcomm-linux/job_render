@@ -1,0 +1,72 @@
+{
+    "id": "67bb89e1e3e60eeff6099cd6",
+    "kind": "kbuild",
+    "name": "kbuild-gcc-12-arm64",
+    "path": [
+      "checkout",
+      "kbuild-gcc-12-arm64"
+    ],
+    "group": "kbuild-gcc-12-arm64",
+    "parent": "67bb8962e3e60eeff6099c81",
+    "state": "done",
+    "result": "pass",
+    "artifacts": {
+      "metadata": "",
+      "kernel": "",
+      "vmlinux": "",
+      "modules": "",
+      "kselftest_tar_gz": "https://files.kernelci.org/kbuild-gcc-12-arm64-681a3b1cea9ae9de13450f99/kselftest.tar.gz",
+      "ramdisk": "",
+      "firmware": ""
+    },
+    "data": {
+      "kernel_revision": {
+        "tree": "qcom-next",
+        "url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git",
+        "branch": "main",
+        "commit": "d082ecbc71e9e0bf49883ee4afd435a77a5101b6",
+        "describe": "v6.14-rc4",
+        "version": {
+          "version": 6,
+          "patchlevel": 14,
+          "sublevel": null,
+          "extra": "-rc4",
+          "name": null
+        },
+        "patchset": null,
+        "commit_tags": [
+          "v6.14-rc4"
+        ],
+        "commit_message": "Commit msg",
+        "tip_of_branch": true
+      },
+      "arch": "arm64",
+      "defconfig": "defconfig",
+      "compiler": "gcc-12",
+      "error_code": null,
+      "error_msg": null,
+      "fragments": [
+        "lab-setup",
+        "kselftest"
+      ],
+      "config_full": "defconfig+lab-setup+kselftest",
+      "platform": "kubernetes",
+      "runtime": "k8s-all",
+      "job_id": "kci-67bb89e1e3e60eeff6099cd6-kbuild-gcc-12-arm64-q2ku8gjy",
+      "job_context": "gke_android-kernelci-external_us-east4-c_kci-big-us-east4",
+      "kernel_type": "image",
+      "regression": null
+    },
+    "debug": {},
+    "jobfilter": null,
+    "platform_filter": [],
+    "created": "2025-02-23T20:49:37.894000",
+    "updated": "2025-02-23T21:54:02.506000",
+    "timeout": "2025-02-24T02:49:37.894000",
+    "holdoff": null,
+    "owner": "production",
+    "submitter": "service:pipeline",
+    "treeid": "a9333d0b6537440630a6eb4bb2aa093d4c191a0703c6792449f06702a1704a69",
+    "user_groups": [],
+    "processed_by_kcidb_bridge": true
+  }

@@ -15,7 +15,8 @@
 {% filter indent(width=10) %}
 {% block testoverlays %}{% endblock %}
 {% endfilter %}
-{% set dtb = device_dtb.split('/')[-1] %}
+{% set dtb_path = node.artifacts.dtb.split('?')[0] %}
+{% set dtb_name = dtb_path.split('/')[-1] %}
 {% set firmware_path = node.artifacts.firmware.split('?')[0] %}
 {% set firmware_name = firmware_path.split('/')[-1] %}
 {% set ramdisk_path = node.artifacts.ramdisk.split('?')[0] %}
@@ -25,7 +26,7 @@
         image: ghcr.io/mwasilew/docker-mkbootimage:master
         steps:
         - cat  {{ ramdisk_name }} {{ firmware_name }} > merged-initramfs.cpio.gz
-        - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk merged-initramfs.cpio.gz --output boot.img
+        - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb_name }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk merged-initramfs.cpio.gz --output boot.img
     to: downloads
 
 - deploy:

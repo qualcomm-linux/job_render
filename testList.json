@@ -1,6 +1,6 @@
 [
   {"type":"directory","name":".","contents":[
-    {"type":"file","name":"KernelCI_PreMerge.yaml"},
+    {"type":"file","name":"qcom-next-ci-premerge.yaml"},
     {"type":"file","name":"meta-qcom_PreMerge.yaml"}
   ]}
 ,

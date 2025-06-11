@@ -25,7 +25,10 @@
       docker:
         image: ghcr.io/mwasilew/docker-mkbootimage:master
         steps:
-        - cat  {{ ramdisk_name }} {{ firmware_name }} > merged-initramfs.cpio.gz
+        - gunzip -c {{ ramdisk_name }} > initramfs-kerneltest-full-image-qcom-armv8a.cpio
+        - gunzip -c {{ firmware_name }} > initramfs-firmware-rb3gen2-image-qcom-armv8a.cpio
+        - cat initramfs-kerneltest-full-image-qcom-armv8a.cpio initramfs-firmware-rb3gen2-image-qcom-armv8a.cpio > merged-initramfs.cpio
+        - gzip merged-initramfs.cpio
         - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb_name }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk merged-initramfs.cpio.gz --output boot.img
     to: downloads
 

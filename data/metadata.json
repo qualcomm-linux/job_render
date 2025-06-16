@@ -12,6 +12,8 @@
         "result": "pass"
     },
     "artifacts": {
-        "dtbs/qcom/qcs6490-rb3gen2.dtb": ""
+        "dtbs/qcom/qcs6490-rb3gen2.dtb": "",
+        "dtbs/qcom/qcs9100-ride-r3.dtb": "",
+        "dtbs/qcom/qcs8300-ride.dtb": ""
     }
 }

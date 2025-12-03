@@ -16,7 +16,7 @@ actions:
 {% endif %}
 device_type: {{ platform_config.name }}
 job_name: "[{{ instanceid|default('AKS')}}] {{ node.id }} {{ node.name }} {{ node.data.kernel_revision.describe }}"
-priority: 20
+priority: high
 timeouts:
   action:
     minutes: 10

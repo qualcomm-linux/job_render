@@ -3,7 +3,8 @@
     {"type":"file","name":"qcom-next-ci-premerge.yaml"},
     {"type":"file","name":"meta-qcom_PreMerge.yaml"},
     {"type":"file","name":"fastrpc-premerge.yaml"},
-    {"type":"file","name":"video_pre-merge.yaml"}
+    {"type":"file","name":"video_pre-merge.yaml"},
+    {"type":"file","name":"video-ci-sanity.yaml"}
   ]}
 ,
   {"type":"report","directories":0,"files":2}

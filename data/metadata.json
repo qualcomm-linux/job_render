@@ -16,6 +16,7 @@
         "dtbs/qcom/qcs9100-ride-r3.dtb": "",
         "dtbs/qcom/qcs8300-ride.dtb": "",
         "dtbs/qcom/sm8750-mtp.dtb": "",
-        "dtbs/qcom/lemans-evk.dtb": ""
+        "dtbs/qcom/lemans-evk.dtb": "",
+        "dtbs/qcom/qcs615-ride.dtb": ""
     }
 }

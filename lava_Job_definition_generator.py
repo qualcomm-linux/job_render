@@ -37,8 +37,12 @@ platform_config = {
     'boot_method': boot_method,
     'name': name
 }
-# Example test method
-test_method = 'baseline'
+# Example test method, 
+# → picks the value from the environment if it exists
+# → otherwise defaults to "baseline"
+test_method = os.environ.get("TEST_METHOD", "baseline")
+print("Using test method:", test_method)
+
 testList_path = 'testList.json'
 test_names = None
 test_details_json_path = testList_path if os.path.exists(testList_path) else None

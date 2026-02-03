@@ -1,0 +1,9 @@
+{% extends boot_template %}
+
+{%- block testoverlays -%}
+modules:
+  compression: xz
+  url: '{{ node.artifacts.modules }}'
+  format: tar
+  path : /
+{%- endblock -%}

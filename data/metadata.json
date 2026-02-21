@@ -19,7 +19,7 @@
         "dtbs/qcom/lemans-evk.dtb": "",
         "dtbs/qcom/monaco-evk.dtb": "",
         "dtbs/qcom/qcs615-ride.dtb": "",
-        "dtbs/qcom/kaanapali-qrd.dtb": "",
+        "dtbs/qcom/kaanapali-mtp.dtb": "",
         "dtbs/qcom/x1e80100-crd.dtb": ""
     }
 }

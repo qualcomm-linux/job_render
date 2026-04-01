@@ -23,6 +23,7 @@ cd job_render
 
 - Set environment variables (BOOT_METHOD, TARGET, TARGET_DTB) in your shell before running the script using the export command.
 Supported `BOOT_METHOD` values: `fastboot`, `u-boot`, `efi`.
+When using `BOOT_METHOD=efi`, set `FLASH_IMAGE` (required) and optionally `FLASH_PORT`.
 Example:
 ```
 export BOOT_METHOD="fastboot"

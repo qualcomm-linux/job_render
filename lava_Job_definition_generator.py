@@ -26,6 +26,10 @@ brarch = 'arm64'
 if not os.path.exists('logs'):
     os.makedirs('logs')
 
+# Create renders directory if it doesn't exist
+if not os.path.exists('renders'):
+    os.makedirs('renders')
+
 
 # Generate a unique log file name based on the current timestamp
 log_filename = datetime.now().strftime('logs/log_%Y%m%d_%H%M%S.log')

@@ -1,42 +1,37 @@
-{%- set flash_image_url = flash_image_url | default(platform_config.flash_image, true) -%}
-{%- set flash_image_auth = flash_image_auth | default('LAVA_BASIC_AUTH', true) -%}
-{%- if flash_image_name is not defined and flash_image_url -%}
-{%-   set flash_image_path = flash_image_url.split('?')[0] -%}
-{%-   set flash_image_name = flash_image_path.split('/')[-1] -%}
-{%- endif -%}
-
 - deploy:
     images:
       image:
-        headers:
-          Authorization: '{{ flash_image_auth }}'
-        url: '{{ flash_image_url }}'
+        url: '{{ node.artifacts.flash_image }}'
     postprocess:
       docker:
-        image: ghcr.io/foundriesio/lava-lmp-sign:main
+        image: ghcr.io/mwasilew/docker-mkbootimage:master
         steps:
         - export IMAGE_PATH=$PWD
+        - cp overlay*.tar.gz overlay.tar.gz
+        - echo "OVERLAY=overlay.tar.gz" >> $IMAGE_PATH/flash.settings
+        - echo "OVERLAY_PATH=/" >> $IMAGE_PATH/flash.settings
+        - echo "ROOTFS_IMAGE=rootfs.img" >> $IMAGE_PATH/flash.settings
         - echo "DEVICE_TYPE={{ platform_config.name }}" >> $IMAGE_PATH/flash.settings
-        - echo "PORT={{ flash_port | default('0', true) }}" >> $IMAGE_PATH/flash.settings
+        - echo "PORT=0" >> $IMAGE_PATH/flash.settings
         - cat $IMAGE_PATH/flash.settings
     timeout:
-      minutes: 20
+     minutes: 30
     to: downloads
-    namespace: kernelciflasher
-
+{% set flash_image_url = node.artifacts.flash_image %}
+{% set flash_image_path = flash_image_url.split('?')[0] %}
+{% set flash_image_name = flash_image_path.split('/')[-1] %}
 - deploy:
     images:
       image:
         url: 'downloads://{{ flash_image_name }}'
       settings:
-        url: 'downloads://flash.settings'
+        url: downloads://flash.settings
+      overlay:
+        url: downloads://overlay.tar.gz
     timeout:
-      minutes: 30
+       minutes: 10
     to: flasher
-    namespace: kernelciflasher
-
 - boot:
-    namespace: target
 {% if meta_qcom | default(false, true) %}
     auto_login:
       login_prompt: 'login:'
@@ -45,8 +40,14 @@
       password: oelinux123
 {% endif %}
     prompts:
-    - root@rb3gen2-core-kit
+    - root@{{ platform_config.name }}
     - root@(.*):[/~]#
+    failure_retry: 3
     timeout:
-      minutes: 20
+      minutes: 10
+    timeouts:
+      bootloader-commands:
+        minutes: 3
+      auto-login-action:
+        minutes: 10
     method: minimal

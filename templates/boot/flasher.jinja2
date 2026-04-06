@@ -1,0 +1,52 @@
+{%- set flash_image_url = flash_image_url | default(platform_config.flash_image, true) -%}
+{%- set flash_image_auth = flash_image_auth | default('LAVA_BASIC_AUTH', true) -%}
+{%- if flash_image_name is not defined and flash_image_url -%}
+{%-   set flash_image_path = flash_image_url.split('?')[0] -%}
+{%-   set flash_image_name = flash_image_path.split('/')[-1] -%}
+{%- endif -%}
+
+- deploy:
+    images:
+      image:
+        headers:
+          Authorization: '{{ flash_image_auth }}'
+        url: '{{ flash_image_url }}'
+    postprocess:
+      docker:
+        image: ghcr.io/foundriesio/lava-lmp-sign:main
+        steps:
+        - export IMAGE_PATH=$PWD
+        - echo "DEVICE_TYPE={{ platform_config.name }}" >> $IMAGE_PATH/flash.settings
+        - echo "PORT={{ flash_port | default('0', true) }}" >> $IMAGE_PATH/flash.settings
+        - cat $IMAGE_PATH/flash.settings
+    timeout:
+      minutes: 20
+    to: downloads
+    namespace: kernelciflasher
+
+- deploy:
+    images:
+      image:
+        url: 'downloads://{{ flash_image_name }}'
+      settings:
+        url: 'downloads://flash.settings'
+    timeout:
+      minutes: 30
+    to: flasher
+    namespace: kernelciflasher
+
+- boot:
+    namespace: target
+{% if meta_qcom | default(false, true) %}
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+      password_prompt: Password
+      password: oelinux123
+{% endif %}
+    prompts:
+    - root@rb3gen2-core-kit
+    - root@(.*):[/~]#
+    timeout:
+      minutes: 20
+    method: minimal

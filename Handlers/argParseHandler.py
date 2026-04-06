@@ -20,6 +20,7 @@ class ArgParseHandler:
         parser.add_argument('--buildurl', type=str, help='custom build json url')
         parser.add_argument('--localjson', type=str, help='local json parsing')
         parser.add_argument('--template', type=str, help='For parsing local path or web url for template')
+        parser.add_argument('--meta-qcom', action='store_true', help='Enable meta-qcom specific auto-login for flasher boot method')
         logging.debug('Added optional arguments')
 
         if self.test_data is not None:
@@ -63,3 +64,8 @@ class ArgParseHandler:
         template_path = self.argument.template
         logging.debug(f'Template path: {template_path}')
         return template_path
+
+    def is_meta_qcom_enabled(self):
+        meta_qcom_enabled = self.argument.meta_qcom
+        logging.debug(f'Meta-qcom enabled: {meta_qcom_enabled}')
+        return meta_qcom_enabled

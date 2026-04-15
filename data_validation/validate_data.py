@@ -4,7 +4,7 @@
 import sys
 
 # Allowed boot methods
-allowed_boot_methods = ['fastboot', 'u-boot', 'efi']
+allowed_boot_methods = ['fastboot', 'u-boot', 'efi', 'flasher']
 
 
 class Validator:
@@ -26,7 +26,7 @@ class Validator:
 
         if self.platform_config['boot_method'] == 'efi' and not self.platform_config.get('flash_image'):
             return False, "BOOT_METHOD 'efi' requires FLASH_IMAGE to be set"
-        
+
         return True, "Valid platform_config"
 
 

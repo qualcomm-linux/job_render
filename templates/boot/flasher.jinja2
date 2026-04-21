@@ -1,0 +1,53 @@
+- deploy:
+    images:
+      image:
+        url: '{{ node.artifacts.flash_image }}'
+    postprocess:
+      docker:
+        image: ghcr.io/mwasilew/docker-mkbootimage:master
+        steps:
+        - export IMAGE_PATH=$PWD
+        - cp overlay*.tar.gz overlay.tar.gz
+        - echo "OVERLAY=overlay.tar.gz" >> $IMAGE_PATH/flash.settings
+        - echo "OVERLAY_PATH=/" >> $IMAGE_PATH/flash.settings
+        - echo "ROOTFS_IMAGE=rootfs.img" >> $IMAGE_PATH/flash.settings
+        - echo "DEVICE_TYPE={{ platform_config.name }}" >> $IMAGE_PATH/flash.settings
+        - echo "PORT=0" >> $IMAGE_PATH/flash.settings
+        - cat $IMAGE_PATH/flash.settings
+    timeout:
+     minutes: 30
+    to: downloads
+{% set flash_image_url = node.artifacts.flash_image %}
+{% set flash_image_path = flash_image_url.split('?')[0] %}
+{% set flash_image_name = flash_image_path.split('/')[-1] %}
+- deploy:
+    images:
+      image:
+        url: 'downloads://{{ flash_image_name }}'
+      settings:
+        url: downloads://flash.settings
+      overlay:
+        url: downloads://overlay.tar.gz
+    timeout:
+       minutes: 10
+    to: flasher
+- boot:
+{% if meta_qcom | default(false, true) %}
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+      password_prompt: Password
+      password: oelinux123
+{% endif %}
+    prompts:
+    - root@{{ platform_config.name }}
+    - root@(.*):[/~]#
+    failure_retry: 3
+    timeout:
+      minutes: 10
+    timeouts:
+      bootloader-commands:
+        minutes: 3
+      auto-login-action:
+        minutes: 10
+    method: minimal

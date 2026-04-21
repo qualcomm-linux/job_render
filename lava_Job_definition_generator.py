@@ -17,12 +17,18 @@ from datetime import datetime
 boot_method = os.environ.get("BOOT_METHOD")
 name = os.environ.get("TARGET")
 target_dtb = os.environ.get("TARGET_DTB")
+flash_image = os.environ.get("FLASH_IMAGE")
+flash_port = os.environ.get("FLASH_PORT", "0")
 brarch = 'arm64'
 
 
 # Create logs directory if it doesn't exist
 if not os.path.exists('logs'):
     os.makedirs('logs')
+
+# Create renders directory if it doesn't exist
+if not os.path.exists('renders'):
+    os.makedirs('renders')
 
 
 # Generate a unique log file name based on the current timestamp
@@ -35,7 +41,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 platform_config = {
     'boot_method': boot_method,
-    'name': name
+    'name': name,
+    'flash_image': flash_image
 }
 # Example test method, 
 # → picks the value from the environment if it exists
@@ -67,6 +74,7 @@ tree_value = arg_parse_handler.get_tree_value()
 is_buildurl_provided = arg_parse_handler.get_buildurl()
 local_json_path = arg_parse_handler.get_local_json_path()
 template_path = arg_parse_handler.get_template_path()
+meta_qcom_enabled = arg_parse_handler.is_meta_qcom_enabled()
 
 ### Error Handling for more than one arguments for json passing (options: build_url, node_id, localjson)
 class ConflictError(Exception):
@@ -129,7 +137,7 @@ if test_data is not None:
 
 ### Render the template with dynamic data
 node_data = data_handler.get_fetched_data()
-job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(),device_dtb = node_data['artifacts']['dtb'],brarch=brarch)
+job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(), device_dtb=node_data['artifacts']['dtb'], brarch=brarch, flash_port=flash_port, meta_qcom=meta_qcom_enabled)
 
 # Parse the rendered YAML and Save the rendered job definition
 template_handler.save_rendered_template(job_definition, os.path.join('renders','lava_job_definition.yaml'))

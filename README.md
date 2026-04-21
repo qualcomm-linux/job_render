@@ -22,6 +22,9 @@ cd job_render
 # Usage
 
 - Set environment variables (BOOT_METHOD, TARGET, TARGET_DTB) in your shell before running the script using the export command.
+Supported `BOOT_METHOD` values: `fastboot`, `u-boot`, `efi`, `flasher`.
+When using `BOOT_METHOD=efi` or `BOOT_METHOD=flasher`, set `FLASH_IMAGE` (required) and optionally `FLASH_PORT`.
+For `BOOT_METHOD=flasher`, pass `--meta-qcom` to enable the `auto_login` block (login prompt `login:`, user `root`).
 Example:
 ```
 export BOOT_METHOD="fastboot"
@@ -33,4 +36,3 @@ export TARGET_DTB="qcs6490-rb3gen2"
 # License
 
 job_render is licensed under the [*BSD-3-clause-clear License*](https://spdx.org/licenses/BSD-3-Clause-Clear.html). See [*LICENSE*](https://github.com/qualcomm-linux/job_render/blob/main/LICENSE) for the full license text.
-

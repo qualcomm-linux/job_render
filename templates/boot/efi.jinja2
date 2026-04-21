@@ -38,7 +38,7 @@
 {% endif %}
     postprocess:
       docker:
-        image: ghcr.io/nandini-matam/kmake-image:v5
+        image: <TODO>
         steps:
 {%- if node.data.kernel_type.endswith('.gz') %}
         - gunzip Image.gz

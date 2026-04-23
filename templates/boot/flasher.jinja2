@@ -32,13 +32,11 @@
        minutes: 10
     to: flasher
 - boot:
-{% if meta_qcom | default(false, true) %}
     auto_login:
       login_prompt: 'login:'
       username: root
       password_prompt: Password
       password: oelinux123
-{% endif %}
     prompts:
     - root@{{ platform_config.name }}
     - root@(.*):[/~]#

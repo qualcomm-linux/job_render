@@ -19,6 +19,7 @@ name = os.environ.get("TARGET")
 target_dtb = os.environ.get("TARGET_DTB")
 flash_image = os.environ.get("FLASH_IMAGE")
 flash_port = os.environ.get("FLASH_PORT", "0")
+default_boot_args = os.environ.get("DEFAULT_BOOT_ARGS", "")
 brarch = 'arm64'
 
 
@@ -137,7 +138,6 @@ if test_data is not None:
 
 ### Render the template with dynamic data
 node_data = data_handler.get_fetched_data()
-job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(), device_dtb=node_data['artifacts']['dtb'], brarch=brarch, flash_port=flash_port, meta_qcom=meta_qcom_enabled)
-
+job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(), device_dtb=node_data['artifacts']['dtb'], brarch=brarch, flash_port=flash_port, meta_qcom=meta_qcom_enabled, default_boot_args=default_boot_args)
 # Parse the rendered YAML and Save the rendered job definition
 template_handler.save_rendered_template(job_definition, os.path.join('renders','lava_job_definition.yaml'))

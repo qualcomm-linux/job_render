@@ -1,0 +1,54 @@
+{#- FASTBOOT_IMAGE=bootfs postprocess: pack a SpacemiT bootfs.ext4 (kernel, ramdisk,
+    dtb and the env_k3.txt read by u-boot) from the LAVA-merged ramdisk.
+    One shell command per step: LAVA joins the steps into a single script. #}
+        - KERNEL={{ kernel_name }}
+        - DTB={{ dtb_name }}
+        - RAMDISK={{ ramdisk_name }}
+        # the kernel may be compressed (Image.gz) or not (Image)
+        - if gzip -t "$KERNEL" 2>/dev/null; then KCAT="gzip -dc"; else KCAT=cat; fi
+        - gzip -t "$RAMDISK"
+        # the ramdisk already contains the LAVA and test overlays
+        - LIST=$(mktemp)
+        - gzip -dc "$RAMDISK" | cpio -it --quiet | sed 's#^\./##' > "$LIST"
+        - grep -qx init "$LIST" || { echo "ramdisk does not contain /init"; exit 1; }
+        # Kernel release: the "Linux version <release> (...)" banner in the kernel image
+        # (what the kernel prints at boot). Fall back to the single
+        # [usr/]lib/modules/<release>/modules.dep in the ramdisk (usrmerge rootfs such
+        # as Debian keep the modules under usr/lib/modules).
+        - MODVERS=$(sed -n 's#^\(usr/\)\{0,1\}lib/modules/\([^/]*\)/modules\.dep$#\2#p' "$LIST" | sort -u)
+        - KVER=$($KCAT "$KERNEL" | grep -a -o -m1 'Linux version [0-9][0-9]*\.[0-9][^ ]*' | cut -d' ' -f3)
+        - 'if [ -z "$KVER" ]; then NMOD=$(echo "$MODVERS" | grep -c . || true); [ "$NMOD" -eq 1 ] || { echo "cannot find the kernel release: no version banner in $KERNEL and $NMOD modules.dep in the ramdisk: $(echo $MODVERS)"; exit 1; }; KVER=$MODVERS; fi'
+        - 'echo "Kernel release: $KVER"'
+        - 'awk -v p="lib/modules/$KVER/" ''{ sub(/^usr\//, "") } index($0, p) == 1 { f = 1 } END { exit !f }'' "$LIST" || echo "WARNING: no modules for $KVER in the ramdisk (found: $(echo $MODVERS))"'
+        # bootfs layout read by the SpacemiT u-boot through env_k3.txt
+        - STAGE=$(mktemp -d)
+        - mkdir -p "$STAGE/spacemit/$KVER"
+        - install -m 0644 "$KERNEL" "$STAGE/vmlinuz-$KVER"
+        - install -m 0644 "$RAMDISK" "$STAGE/initrd.img-$KVER"
+        - install -m 0644 "$DTB" "$STAGE/spacemit/$KVER/$DTB"
+        - printf '%s\n' "knl_name=vmlinuz-$KVER" "ramdisk_name=initrd.img-$KVER" "dtb_dir=spacemit/$KVER" "ramdisk_addr=0x130000000" "loglevel=8" "commonargs=setenv bootargs plymouth.prefer-fbcon plymouth.ignore-serial-consoles splash" > "$STAGE/env_k3.txt"
+        # u-boot loads the dtb at fdt_addr_r=0x138000000 before the ramdisk at
+        # ramdisk_addr_r=0x130000000, so a ramdisk over 128 MiB overwrites the dtb. For
+        # those, move the dtb just below kernel_addr_r=0x140000000 (env_k3.txt is
+        # imported over the default environment); 255 MiB is then the ramdisk limit.
+        - RDSIZE=$(stat -c %s "$RAMDISK")
+        - 'if [ "$RDSIZE" -gt 134217728 ]; then echo "fdt_addr_r=0x13ff00000" >> "$STAGE/env_k3.txt"; fi'
+        - '[ "$RDSIZE" -le 267386880 ] || { echo "ramdisk ($RDSIZE bytes) would overwrite the dtb/kernel load addresses"; exit 1; }'
+        - chmod 0644 "$STAGE/env_k3.txt"
+        # payload + 15% + 16 MiB for ext4 metadata, 16 MiB aligned, at least 128 MiB.
+        # The image must fit the 256 MiB bootfs partition of the SpacemiT partition
+        # table (partition_universal.json).
+        - BOOTFS_PART_MB=256
+        - PAYLOAD=$(( $(stat -c %s "$KERNEL") + $(stat -c %s "$RAMDISK") + $(stat -c %s "$DTB") ))
+        - PAYLOAD_MB=$(( (PAYLOAD + 1048575) / 1048576 ))
+        - SIZE=$(( ((PAYLOAD_MB * 115 / 100 + 16 + 15) / 16) * 16 ))
+        - '[ "$SIZE" -lt 128 ] && SIZE=128'
+        - '[ "$SIZE" -le "$BOOTFS_PART_MB" ] || { echo "bootfs.ext4 needs ${SIZE} MiB (payload ${PAYLOAD_MB} MiB) but the bootfs partition is ${BOOTFS_PART_MB} MiB"; exit 1; }'
+        - rm -f bootfs.ext4
+        # Pin the on-disk format to what the SpacemiT u-boot (2022.10) is known to read
+        # (4 KiB blocks, no orphan_file/metadata_csum_seed). It failed to mount a bootfs
+        # built with Debian's small-filesystem defaults.
+        - mkfs.ext4 -F -q -L bootfs -m 0 -b 4096 -O ^orphan_file,^metadata_csum_seed -d "$STAGE" bootfs.ext4 "${SIZE}M"
+        - e2fsck -fn bootfs.ext4
+        - find "$STAGE" -type f -printf '%P  %s bytes\n' | sort
+        - rm -rf "$STAGE" "$LIST"

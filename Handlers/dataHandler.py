@@ -184,7 +184,8 @@ class DataHandler:
                         "repository": "https://github.com/qualcomm-linux/qcom-linux-testkit.git",
                         "from": "git",
                         "path": f"Runner/plans{specific_test_path}",
-                        "name": f"{specific_test_name}-tests"
+                        "name": f"{specific_test_name}-tests",
+                        "revision": "testkit-2026.09.20"
                     })
                     self.tests_count+=1
                     logging.debug('Added test: %s', specific_test_name)

@@ -107,7 +107,11 @@ class DataHandler:
 
     def fetch_and_update_dtb(self, target_database):
         target_dtb = target_database
-        target_dtb = 'dtbs/qcom/'+target_dtb+'.dtb'
+        # TARGET_DTB is either a qcom dtb name ("qcs6490-rb3gen2") or
+        # "<vendor>/<name>" for other vendors ("spacemit/k3-pico-itx")
+        if '/' not in target_dtb:
+            target_dtb = 'qcom/'+target_dtb
+        target_dtb = 'dtbs/'+target_dtb+'.dtb'
         logging.debug('Target DTB path: %s', target_dtb)
 
         if self.local_json_path is not None:

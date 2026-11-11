@@ -1,3 +1,6 @@
+{% set flash_image_url = node.artifacts.flash_image %}
+{% set flash_image_path = flash_image_url.split('?')[0] %}
+{% set flash_image_name = flash_image_path.split('/')[-1] %}
 - deploy:
     images:
       image:
@@ -11,31 +14,109 @@
         image: ghcr.io/mwasilew/docker-mkbootimage:master
         steps:
         - export IMAGE_PATH=$PWD
+        - export IMG={{ flash_image_name }}
+        - echo "=== Preparing combined test overlay ==="
         - cp overlay*.tar.gz overlay.tar.gz
         - mkdir overlay_root
         - tar -xzvf overlay.tar.gz -C overlay_root
-        - tar -xzvf Test_binaries.tar.gz -C overlay_root 
-        - tar -cvzf overlay.tar.gz -C overlay_root .
-        - echo "OVERLAY=overlay.tar.gz" >> $IMAGE_PATH/flash.settings
-        - echo "OVERLAY_PATH=/" >> $IMAGE_PATH/flash.settings
-        - echo "ROOTFS_IMAGE=rootfs.img" >> $IMAGE_PATH/flash.settings
+        - tar -xzvf Test_binaries.tar.gz -C overlay_root
+        - echo "=== Installing required tools ==="
+        - |
+          if ! command -v e2cp > /dev/null 2>&1 || ! command -v python3 > /dev/null 2>&1; then
+            apt-get update -qq && apt-get install -y -qq e2tools python3
+          fi
+        - echo "=== Locating rootfs.img inside $IMG (byte-exact, no full extraction) ==="
+        - |
+          set -e
+          python3 -c "
+          import tarfile
+          tf = tarfile.open('$IMG', 'r:')
+          m = tf.getmember('rootfs.img')
+          print(m.offset_data)
+          print(m.size)
+          " > rootfs_loc.txt
+          ROOTFS_OFFSET=$(sed -n '1p' rootfs_loc.txt)
+          ROOTFS_SIZE=$(sed -n '2p' rootfs_loc.txt)
+          if [ -z "$ROOTFS_OFFSET" ] || [ -z "$ROOTFS_SIZE" ]; then
+            echo "FATAL: could not locate rootfs.img inside $IMG"
+            exit 1
+          fi
+          echo "rootfs.img offset=$ROOTFS_OFFSET size=$ROOTFS_SIZE bytes"
+          echo "$ROOTFS_OFFSET" > rootfs_offset.txt
+          echo "$ROOTFS_SIZE" > rootfs_size.txt
+        - echo "=== Extracting rootfs.img bytes from $IMG for baking ==="
+        - |
+          set -e
+          ROOTFS_OFFSET=$(cat rootfs_offset.txt)
+          ROOTFS_SIZE=$(cat rootfs_size.txt)
+          dd if="$IMG" of=rootfs.img bs=1M skip="$ROOTFS_OFFSET" count="$ROOTFS_SIZE" iflag=skip_bytes,count_bytes status=none
+          ACTUAL_SIZE=$(wc -c < rootfs.img)
+          if [ "$ACTUAL_SIZE" != "$ROOTFS_SIZE" ]; then
+            echo "FATAL: extracted rootfs.img size ($ACTUAL_SIZE) does not match expected size ($ROOTFS_SIZE)"
+            exit 1
+          fi
+        - e2fsck -fy rootfs.img || echo "WARN fsck exit code $?"
+        - echo "=== Baking overlay into rootfs.img ==="
+        - |
+          set -e
+          BASE=overlay_root
+          find "$BASE" -type d | sort | while read -r dir; do
+            reldir="${dir#$BASE}"
+            [ -z "$reldir" ] && continue
+            e2mkdir "rootfs.img:${reldir}" || { echo "FATAL: e2mkdir failed for $reldir"; exit 1; }
+          done
+          find "$BASE" -type f | while read -r src; do
+            reldst="${src#$BASE}"
+            e2cp -p "$src" "rootfs.img:${reldst}" || { echo "FATAL: e2cp failed for $reldst"; exit 1; }
+          done
+        - echo "=== Verifying overlay baked into rootfs.img ==="
+        - |
+          set -e
+          LAVA_DIR=$(ls overlay_root | grep '^lava-' | head -1)
+          if [ -z "$LAVA_DIR" ]; then
+            echo "FATAL: no lava-<job> directory found in overlay"
+            exit 1
+          fi
+          if ! e2ls "rootfs.img:/$LAVA_DIR/environment" > /dev/null 2>&1; then
+            echo "FATAL: /$LAVA_DIR/environment missing from rootfs.img after bake"
+            e2ls "rootfs.img:/$LAVA_DIR/" || true
+            exit 1
+          fi
+          echo "SUCCESS: /$LAVA_DIR/environment confirmed in rootfs.img"
+        - e2fsck -fy rootfs.img || echo "WARN fsck exit code $?"
+        - echo "=== Patching baked rootfs.img back into $IMG at its original byte offset (in-place, byte-exact) ==="
+        - |
+          set -e
+          ROOTFS_OFFSET=$(cat rootfs_offset.txt)
+          ROOTFS_SIZE=$(cat rootfs_size.txt)
+          PATCHED_SIZE=$(wc -c < rootfs.img)
+          if [ "$PATCHED_SIZE" != "$ROOTFS_SIZE" ]; then
+            echo "FATAL: baked rootfs.img size ($PATCHED_SIZE) changed from original ($ROOTFS_SIZE) - cannot patch in place"
+            exit 1
+          fi
+          dd if=rootfs.img of="$IMG" bs=1M seek="$ROOTFS_OFFSET" oflag=seek_bytes conv=notrunc status=none
+          rm -f rootfs.img
+        - echo "=== Verifying $IMG structure is unchanged after in-place patch ==="
+        - |
+          set -e
+          python3 -c "
+          import tarfile
+          tf = tarfile.open('$IMG', 'r:')
+          for m in tf.getmembers():
+              print(m.name, m.size, m.offset_data)
+          "
         - echo "DEVICE_TYPE={{ platform_config.name }}" >> $IMAGE_PATH/flash.settings
         - echo "PORT=0" >> $IMAGE_PATH/flash.settings
         - cat $IMAGE_PATH/flash.settings
     timeout:
-     minutes: 40
+     minutes: 45
     to: downloads
-{% set flash_image_url = node.artifacts.flash_image %}
-{% set flash_image_path = flash_image_url.split('?')[0] %}
-{% set flash_image_name = flash_image_path.split('/')[-1] %}
 - deploy:
     images:
       image:
         url: 'downloads://{{ flash_image_name }}'
       settings:
         url: downloads://flash.settings
-      overlay:
-        url: downloads://overlay.tar.gz
     timeout:
        minutes: 20
     to: flasher

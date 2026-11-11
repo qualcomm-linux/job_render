@@ -181,7 +181,7 @@ class DataHandler:
                 for specific_test_path in specific_test_paths:
                     specific_test_name = self.extract_test_name(specific_test_path)
                     self.data.setdefault("tests", []).append({
-                        "repository": "https://github.com/qualcomm-linux/qcom-linux-testkit.git",
+                        "repository": "https://github.com/Manigurr/qcom-linux-testkit.git",
                         "from": "git",
                         "path": f"Runner/plans{specific_test_path}",
                         "name": f"{specific_test_name}-tests",

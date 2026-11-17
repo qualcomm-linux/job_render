@@ -25,6 +25,11 @@
         "dtbs/qcom/qrb2210-rb1.dtb": "",
         "dtbs/qcom/hamoa-iot-evk.dtb": "",
         "dtbs/qcom/purwa-iot-evk.dtb": "",
-        "dtbs/qcom/shikra-iqs-evk.dtb": ""
+        "dtbs/qcom/shikra-iqs-evk.dtb": "",
+        "dtbs/qcom/nord-rrd.dtb": "",
+        "dtbs/qcom/eliza-cqs-evk-emmc.dtb": "",
+        "dtbs/qcom/hawi-mtp.dtb": "",
+        "dtbs/qcom/mahua-crd.dtb": ""
+
     }
 }

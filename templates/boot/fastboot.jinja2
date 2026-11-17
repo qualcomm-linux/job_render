@@ -1,3 +1,15 @@
+{#- FASTBOOT_IMAGE selects what the postprocess step builds and how it is deployed:
+    boot   (default): boot.img (mkbootimg), loaded with "fastboot boot"
+    bootfs: SpacemiT bootfs.ext4, flashed to the "bootfs" partition
+    How the device then boots is defined by its fastboot_sequence/pre_os_command. -#}
+{#- Default ramdisk when the build has none: the KernelCI Debian kselftest rootfs (it has the
+    python3 needed by the kselftest test definition, Debian arch naming), else buildroot. #}
+{% if test_method == 'kselftest' %}
+{% set default_ramdisk = 'https://storage.kernelci.org/images/rootfs/debian/trixie-kselftest/20260606.0/' + {'riscv': 'riscv64'}.get(brarch, brarch) + '/rootfs.cpio.gz' %}
+{% else %}
+{% set default_ramdisk = 'https://storage.kernelci.org/images/rootfs/buildroot/buildroot-baseline/20260915.0/' + brarch + '/rootfs.cpio.gz' %}
+{% endif %}
+{% set ramdisk_url = node.artifacts.ramdisk or default_ramdisk %}
 - deploy:
     images:
       image:
@@ -9,7 +21,7 @@
         url: '{{ node.artifacts.firmware }}'
       {% endif %}
       ramdisk:
-        url: '{{ node.artifacts.ramdisk }}'
+        url: '{{ ramdisk_url }}'
         compression: gz
         format: cpio.newc
         overlays:
@@ -23,12 +35,16 @@
 {% set firmware_path = node.artifacts.firmware.split('?')[0] %}
 {% set firmware_name = firmware_path.split('/')[-1] %}
 {% endif %}
-{% set ramdisk_path = node.artifacts.ramdisk.split('?')[0] %}
+{% set ramdisk_path = ramdisk_url.split('?')[0] %}
 {% set ramdisk_name = ramdisk_path.split('/')[-1] %}
+{% set kernel_name = node.artifacts.kernel.split('?')[0].split('/')[-1] %}
     postprocess:
       docker:
         image: artifacts.codelinaro.org/clo-420-qli-registry/kmake-image-ci:ver.1.0
         steps:
+{% if fastboot_image == 'bootfs' %}
+{% include 'boot/fastboot-bootfs-steps.jinja2' %}
+{% else %}
         - gunzip -c {{ ramdisk_name }} > initramfs-kerneltest-full-image-qcom-armv8a.cpio
         {% if firmware_name %}
         - gunzip -c {{ firmware_name }} > initramfs-firmware-rb3gen2-image-qcom-armv8a.cpio
@@ -38,8 +54,28 @@
         {% endif %}
         - gzip merged-initramfs.cpio
         - mkbootimg --header_version 2 --kernel Image --dtb {{ dtb_name }} --cmdline "console=ttyMSM0,115200n8 earlycon qcom_geni_serial.con_enabled=1 kernel.sched_pelt_multiplier=4 mem_sleep_default=s2idle mitigations=auto video=efifb:off" --ramdisk merged-initramfs.cpio.gz --output boot.img
+{% endif %}
+{% if fastboot_image == 'bootfs' %}
+    # the KernelCI Debian ramdisk is ~120 MB, more than the default 5 min allows on slow links
+    timeout:
+      minutes: 30
+    timeouts:
+      download-retry:
+        minutes: 20
+      http-download:
+        minutes: 20
+{% endif %}
     to: downloads
 
+{% if fastboot_image == 'bootfs' %}
+- deploy:
+    images:
+      bootfs:
+        url: 'downloads://bootfs.ext4'
+    timeout:
+      minutes: 10
+    to: fastboot
+{% else %}
 - deploy:
     images:
       boot:
@@ -47,10 +83,17 @@
     timeout:
       minutes: 2
     to: download
+{% endif %}
 
 - boot:
     prompts:
+{% if node.artifacts.ramdisk %}
     - 'root@[^:]+:~# '
+{% else %}
+    # default KernelCI ramdisks (buildroot, Debian kselftest)
+    - '~ #'
+    - '/ #'
+{% endif %}
     failure_retry: 3
     timeout:
       minutes: 10

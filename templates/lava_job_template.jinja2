@@ -2,6 +2,9 @@ actions:
 {% set boot_template = 'boot/' + platform_config.boot_method + '.jinja2' %}
 {% set boot_overlay_template = 'overlays/' + test_method + '.jinja2' %}
 {% include boot_overlay_template %}
+{% if test_method == 'kselftest' %}
+{% include 'tests/kselftest.jinja2' %}
+{% endif %}
 {% if tests_count %}
 - test:
     timeout:

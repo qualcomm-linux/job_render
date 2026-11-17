@@ -1,0 +1,19 @@
+{% extends boot_template %}
+
+{%- block testoverlays -%}
+modules:
+  compression: xz
+  url: '{{ node.artifacts.modules }}'
+  format: tar
+  path : /
+kselftest:
+{% if node.artifacts.kselftest_tar_xz %}
+  compression: xz
+  url: '{{ node.artifacts.kselftest_tar_xz }}'
+{% else %}
+  compression: gz
+  url: '{{ node.artifacts.kselftest_tar_gz }}'
+{% endif %}
+  format: tar
+  path: /opt/kselftests/mainline/
+{%- endblock -%}

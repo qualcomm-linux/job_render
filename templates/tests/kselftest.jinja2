@@ -1,0 +1,33 @@
+{#- Same test definitions as KernelCI kselftest jobs: the Linaro kselftest runner uses the
+    kselftest installed in the ramdisk (SKIP_INSTALL) at /opt/kselftests/mainline/. #}
+- test:
+    timeout:
+      minutes: 20
+    definitions:
+    - from: inline
+      name: timesync-off
+      path: inline/timesync-off.yaml
+      repository:
+        metadata:
+          description: Disable systemd time sync services
+          format: Lava-Test Test Definition 1.0
+          name: timesync-off
+        run:
+          steps:
+          - systemctl stop systemd-timesyncd || true
+    # The overlay (with this repository) is merged into the ramdisk, which must fit the
+    # bootfs partition: a "revision" forces a full clone, so use a shallow clone of the
+    # branch and drop the .git history (~60 MiB less than a full clone).
+    - from: git
+      name: kselftest
+      repository: https://github.com/linaro/test-definitions.git
+      branch: master
+      history: false
+      path: automated/linux/kselftest/kselftest.yaml
+      parameters:
+        ENV: ''
+        SKIPFILE: /dev/null
+        SKIP_INSTALL: true
+        TESTPROG_URL: ''
+        TST_CASENAME: ''
+        TST_CMDFILES: '{{ kselftest_collections }}'

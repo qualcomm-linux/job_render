@@ -75,6 +75,8 @@ is_buildurl_provided = arg_parse_handler.get_buildurl()
 local_json_path = arg_parse_handler.get_local_json_path()
 template_path = arg_parse_handler.get_template_path()
 meta_qcom_enabled = arg_parse_handler.is_meta_qcom_enabled()
+tag_value = arg_parse_handler.get_tag()
+testkit_revision = arg_parse_handler.get_testkit_revision()
 
 ### Error Handling for more than one arguments for json passing (options: build_url, node_id, localjson)
 class ConflictError(Exception):
@@ -133,11 +135,11 @@ data_handler.fetch_and_update_dtb(target_dtb)
 
 # ### Injecting tests into the definition
 if test_data is not None:
-    data_handler.put_tests_into_fetched_data(test_names=test_names, arg_parse_handler=arg_parse_handler, test_data=test_data)
+    data_handler.put_tests_into_fetched_data(test_names=test_names, arg_parse_handler=arg_parse_handler, test_data=test_data, testkit_revision=testkit_revision)
 
 ### Render the template with dynamic data
 node_data = data_handler.get_fetched_data()
-job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(), device_dtb=node_data['artifacts']['dtb'], brarch=brarch, flash_port=flash_port, meta_qcom=meta_qcom_enabled)
+job_definition = template_handler.render_template(template, node=data_handler.get_fetched_data(), platform_config=platform_config, test_method=test_method, tests_count=data_handler.get_count_of_tests(), device_dtb=node_data['artifacts']['dtb'], brarch=brarch, flash_port=flash_port, meta_qcom=meta_qcom_enabled, tag=tag_value)
 
 # Parse the rendered YAML and Save the rendered job definition
 template_handler.save_rendered_template(job_definition, os.path.join('renders','lava_job_definition.yaml'))

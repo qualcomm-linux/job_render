@@ -6,6 +6,8 @@ from utils.generate_url_with_optional_node_id import build_url
 from utils.filter_files import filter_data
 import sys, json, os, logging
 
+DEFAULT_TESTKIT_REVISION = "testkit-2026.09.20"
+
 class DataHandler:
     def __init__(self, node_value=None, tree_value=None, build_url_main=None, local_json_path=None):
         self.node_value = node_value
@@ -165,7 +167,8 @@ class DataHandler:
         test_name = file_name.replace('.yaml', '')
         return test_name
     
-    def put_tests_into_fetched_data(self, test_names, arg_parse_handler, test_data):
+    def put_tests_into_fetched_data(self, test_names, arg_parse_handler, test_data, testkit_revision=None):
+        testkit_revision = testkit_revision or DEFAULT_TESTKIT_REVISION
         logging.debug('put_tests_into_fetched_data called with test_names: %s', test_names)
         logging.debug('put_tests_into_fetched_data called with test_data: %s', test_data)
         for test_name in test_names:
@@ -185,7 +188,7 @@ class DataHandler:
                         "from": "git",
                         "path": f"Runner/plans{specific_test_path}",
                         "name": f"{specific_test_name}-tests",
-                        "revision": "testkit-2026.09.20"
+                        "revision": testkit_revision
                     })
                     self.tests_count+=1
                     logging.debug('Added test: %s', specific_test_name)

@@ -21,6 +21,8 @@ class ArgParseHandler:
         parser.add_argument('--localjson', type=str, help='local json parsing')
         parser.add_argument('--template', type=str, help='For parsing local path or web url for template')
         parser.add_argument('--meta-qcom', action='store_true', help='Enable meta-qcom specific auto-login for flasher boot method')
+        parser.add_argument('--tag', type=str, help='LAVA device tag to add under "tags" in the job definition')
+        parser.add_argument('--testkit_revision', type=str, help='qcom-linux-testkit revision used for test definitions')
         logging.debug('Added optional arguments')
 
         if self.test_data is not None:
@@ -64,6 +66,16 @@ class ArgParseHandler:
         template_path = self.argument.template
         logging.debug(f'Template path: {template_path}')
         return template_path
+
+    def get_tag(self):
+        tag = self.argument.tag
+        logging.debug(f'Tag: {tag}')
+        return tag
+
+    def get_testkit_revision(self):
+        testkit_revision = self.argument.testkit_revision
+        logging.debug(f'Testkit revision: {testkit_revision}')
+        return testkit_revision
 
     def is_meta_qcom_enabled(self):
         meta_qcom_enabled = self.argument.meta_qcom
